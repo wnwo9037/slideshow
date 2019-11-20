@@ -3,23 +3,28 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'image_picker.dart';
+
 class Slideshow extends StatefulWidget {
   final List<Image> images;
+  final Options options;
 
-  Slideshow(this.images);
+  Slideshow(this.images, this.options);
 
   @override
-  _SlideshowState createState() => _SlideshowState(images);
+  _SlideshowState createState() => _SlideshowState(images, options);
 }
 
 class _SlideshowState extends State<Slideshow> {
   final List<Image> images;
+  final Options option;
+
   Timer timer;
   Image image1;
   Image image2;
   int i = 0;
 
-  _SlideshowState(this.images);
+  _SlideshowState(this.images, this.option);
 
   @override
   void initState() {
@@ -28,8 +33,12 @@ class _SlideshowState extends State<Slideshow> {
       return;
     }
 
+    if (option.shuffle) {
+      images.shuffle();
+    }
+
     image1 = images[0];
-    timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    timer = Timer.periodic(Duration(seconds: option.duration), (timer) {
       setState(() {
         i = i + 1;
         if (i % 2 == 0) {
