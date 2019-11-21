@@ -36,48 +36,107 @@ class _ImagePickerState extends State<ImagePicker> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.cyan,
-      body: Container(
-        margin: EdgeInsets.all(30.0),
-        child: Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.cyan[100],
-              child: Text('이미지 선택: ${images.length}'),
-              onPressed: () {
-                getGalleryImages();
-              },
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            height: 50,
+            color: Colors.cyan[100],
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: images
+                    .map((image) => Image(
+                          image: image.image,
+                          filterQuality: FilterQuality.low,
+                        ))
+                    .toList()),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FlatButton(
+                child: Icon(
+                  Icons.add_photo_alternate,
+                  color: Colors.cyan[100],
+                  size: 100,
+                ),
+                onPressed: () {
+                  getGalleryImages();
+                },
+              ),
+              FlatButton(
+                child: Icon(
+                  Icons.play_circle_filled,
+                  size: 100,
+                  color: Colors.cyan[100],
+                ),
+                onPressed: () {
+                  if (images.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Slideshow(images, options)),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          Container(
+            height: 50,
+            color: Colors.cyan[100],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                FlatButton(
+                  child: Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.cyan,
+                    size: 50,
+                  ),
+                  onPressed: () => setState(() {
+                    if (options.duration > 1) {
+                      options.duration--;
+                    }
+                  }),
+                ),
+                Text(
+                  '${options.duration}s',
+                  style: TextStyle(
+                    color: Colors.cyan,
+                    fontSize: 20.0,
+                  ),
+                ),
+                FlatButton(
+                  child: Icon(
+                    Icons.arrow_drop_up,
+                    size: 50,
+                    color: Colors.cyan,
+                  ),
+                  onPressed: () => setState(() {
+                    options.duration++;
+                  }),
+                ),
+                FlatButton(
+                  child: options.shuffle
+                      ? Icon(
+                          Icons.shuffle,
+                          size: 30,
+                          color: Colors.cyan,
+                        )
+                      : Icon(
+                          Icons.repeat,
+                          size: 30,
+                          color: Colors.cyan,
+                        ),
+                  onPressed: () => setState(() {
+                    options.shuffle = !options.shuffle;
+                  }),
+                ),
+              ],
             ),
-            FlatButton(
-              color: Colors.cyan[100],
-              child: Text('슬라이드쇼 시작'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Slideshow(images, options)),
-                );
-              },
-            ),
-            Text('재생 시간'),
-            DropdownButton<int>(
-              value: options.duration,
-              items: List.generate(100, (i) => i + 1)
-                  .map<DropdownMenuItem<int>>((i) => DropdownMenuItem<int>(
-                      value: i, child: Text(i.toString() + '초')))
-                  .toList(),
-              onChanged: (i) => setState(() {
-                options.duration = i;
-              }),
-            ),
-            Text('랜덤 재생'),
-            Checkbox(
-              value: options.shuffle,
-              onChanged: (b) => setState(() {
-                options.shuffle = b;
-              }),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

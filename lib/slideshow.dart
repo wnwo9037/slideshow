@@ -60,17 +60,6 @@ class _SlideshowState extends State<Slideshow> {
 
   @override
   Widget build(BuildContext context) {
-    if (images.isEmpty) {
-      return Container(
-        color: Colors.cyan,
-        child: Center(
-          child: Container(
-            child: Text('No images.'),
-          ),
-        ),
-      );
-    }
-
     return AnimatedCrossFade(
       crossFadeState:
           i % 2 == 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
